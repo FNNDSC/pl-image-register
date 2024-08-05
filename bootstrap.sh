@@ -14,9 +14,9 @@
 # STEP 1. Change these values to your liking.
 # ----------------------------------------
 
-PLUGIN_NAME="$(basename $(dirname $(realpath $0)))"  # name of current directory
+PLUGIN_NAME="pl-image-register"  # name of current directory
 PLUGIN_TITLE='My ChRIS Plugin'
-SCRIPT_NAME='commandname'
+SCRIPT_NAME='image_register'
 DESCRIPTION='A ChRIS plugin to do something awesome'
 ORGANIZATION='FNNDSC'
 EMAIL='dev@babyMRI.org'
