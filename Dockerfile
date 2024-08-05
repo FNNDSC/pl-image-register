@@ -4,8 +4,10 @@
 FROM docker.io/python:3.12.1-slim-bookworm
 
 LABEL org.opencontainers.image.authors="FNNDSC <dev@babyMRI.org>" \
-      org.opencontainers.image.title="ChRIS Plugin Title" \
-      org.opencontainers.image.description="A ChRIS plugin that..."
+      org.opencontainers.image.title="pl-image-register" \
+      org.opencontainers.image.description="This is a ChRIS plugin that registers a moving image onto a fixed image \
+      and then resamples the moving image in the fixed image space. The resultant resampled image is saved as \
+      a NIfTI file."
 
 ARG SRCDIR=/usr/local/src/app
 WORKDIR ${SRCDIR}
@@ -19,4 +21,4 @@ RUN pip install ".[${extras_require}]" \
     && cd / && rm -rf ${SRCDIR}
 WORKDIR /
 
-CMD ["commandname"]
+CMD ["image_register"]
