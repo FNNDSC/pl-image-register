@@ -35,7 +35,7 @@ setup(name='register_image',
     author_email='dev@babyMRI.org',
     url='https://github.com/FNNDSC/pl-image-register',
     py_modules=['image_register', 'registration_tools', 'vizualization_tools'],
-    install_requires=parse_requirements('requirements.txt'),  # ToDo: can I add FSL here like that?
+    install_requires=parse_requirements('requirements.txt'),
     license='MIT',
     entry_points={'console_scripts': ['image_register = image_register:main']},
     classifiers=[

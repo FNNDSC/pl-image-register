@@ -16,3 +16,7 @@ __pycache__/
 examples/
 
 venv/
+
+# Added by Arman:
+
+data/

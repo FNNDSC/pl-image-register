@@ -30,7 +30,7 @@ parser.add_argument('--registered_moving_image', type=str, default='registered_m
                     help='relative path to the registered image in relation to output folder')
 parser.add_argument('--transform_matrix', type=str, default='transform.mat',
                     help='relative path to the transformation matrix in relation to output folder')
-parser.add_argument('--dof', type=int, default=6,
+parser.add_argument('--dof', type=str, default='6',
                     help='degrees of freedom to use in registration. Default = 6 (i.e. rigid registration).')
 parser.add_argument('--cost', type=str, default='mutualinfo',
                     help='cost function used in registration. Default = mutualinfo (mutual information).')
