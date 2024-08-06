@@ -1,48 +1,46 @@
+
 from setuptools import setup
-import re
 
-_version_re = re.compile(r"(?<=^__version__ = (\"|'))(.+)(?=\"|')")
 
-def get_version(rel_path: str) -> str:
+def parse_requirements(file_path):
     """
-    Searches for the ``__version__ = `` line in a source code file.
+    Parse the requirements.txt file and return a list of requirements, ignoring comments.
 
-    https://packaging.python.org/en/latest/guides/single-sourcing-package-version/
+    Parameters:
+    file_path (str): Path to the requirements.txt file.
+
+    Returns:
+    list: List of package names.
     """
-    with open(rel_path, 'r') as f:
-        matches = map(_version_re.search, f)
-        filtered = filter(lambda m: m is not None, matches)
-        version = next(filtered, None)
-        if version is None:
-            raise RuntimeError(f'Could not find __version__ in {rel_path}')
-        return version.group(0)
+    requirements = []
+    with open(file_path, 'r') as file:
+        for line in file:
+            # Strip whitespace and newline characters
+            line = line.strip()
+            # Skip empty lines and comments
+            if not line or line.startswith('#'):
+                continue
+            # Split the line on the first occurrence of '~='
+            package = line.split('~=')[0]
+            requirements.append(package)
+
+    return requirements
 
 
-setup(
-    name='chris-plugin-template',
-    version=get_version('archives/Trash/app.py'),
-    description='A ChRIS DS plugin template',
-    author='FNNDSC',
+
+setup(name='register_image',
+    version='1.0.0',
+    description='A ChRIS plugin for image registration and re-slicing.',
+    author='FNNDSC / Arman Avesta, MD, PhD',
     author_email='dev@babyMRI.org',
-    url='https://github.com/FNNDSC/python-chrisapp-template',
-    py_modules=['app'],
-    install_requires=['chris_plugin'],
+    url='https://github.com/FNNDSC/pl-image-register',
+    py_modules=['image_register', 'registration_tools', 'visualisation_tools'],
+    install_requires=parse_requirements('requirements.txt'),
     license='MIT',
-    entry_points={
-        'console_scripts': [
-            'commandname = app:main'
-        ]
-    },
+    entry_points={'console_scripts': ['image_register = image_register:main']},
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
-        'Topic :: Scientific/Engineering :: Medical Science Apps.'
-    ],
-    extras_require={
-        'none': [],
-        'dev': [
-            'pytest~=7.1'
-        ]
-    }
-)
+        'Topic :: Scientific/Engineering :: Medical Science Apps.'],
+    extras_require={'none': [], 'dev': ['pytest~=7.1']})

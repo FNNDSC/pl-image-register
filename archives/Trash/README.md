@@ -1,16 +1,9 @@
-# ChRIS Register Image Plugin
+# _ChRIS_ Plugin Template
 
-[![test status](https://github.com/FNNDSC/python-chrisapp-template/actions/workflows/src.yml/badge.svg)](https://github.com/FNNDSC/register_image)
+[![test status](https://github.com/FNNDSC/python-chrisapp-template/actions/workflows/src.yml/badge.svg)](https://github.com/FNNDSC/python-chrisapp-template/actions/workflows/src.yml)
 [![MIT License](https://img.shields.io/github/license/FNNDSC/python-chrisapp-template)](LICENSE)
 
-This is a _ChRIS_ plugin applications for image registration and re-slicing in Python.
-
-
-## About Register Image Plugin
-
-This is a ChRIS plugin that registers a moving image onto a fixed image, and then re-slices the moving image in the
-fixed image space. The resultant re-sliced image is saved as a NIfTI file. The moving and fixed images can be of 
-different patients.
+This is a minimal template repository for _ChRIS_ plugin applications in Python.
 
 ## About _ChRIS_ Plugins
 
@@ -23,11 +16,19 @@ and creates data to an output directory with the usage
 
 For more information, visit our website https://chrisproject.org
 
-## Usage Instructions
+## How to Use This Template
 
-ToDo.
+Go to https://github.com/FNNDSC/python-chrisapp-template and click "Use this template".
+The newly created repository is ready to use right away.
 
-## Examples of other ChRIS Plugins
+A script `bootstrap.sh` is provided to help fill in and rename values for your new project.
+It is optional to use.
+
+1. Edit the variables in `bootstrap.sh`
+2. Run `./bootstrap.sh`
+3. Follow the instructions it will print out
+
+## Example Plugins
 
 Here are some good, complete examples of _ChRIS_ plugins created from this template.
 
@@ -41,8 +42,8 @@ Here are some good, complete examples of _ChRIS_ plugins created from this templ
 
 | Path                       | Purpose                                                                                                                                                                                                  |
 |----------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `app.py`                   | Main scrip that runs the registration                                                                                                                                                                    |
-| `register.py`              | Registration module that contains registration algorithms                                                                                                                                                |
+| `app.py`                   | Main script: start editing here!                                                                                                                                                                         |
+| `tests/`                   | Unit tests                                                                                                                                                                                               |
 | `setup.py`                 | [Python project metadata and installation script](https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/#setup-py)                                                        |
 | `requirements.txt`         | List of Python dependencies                                                                                                                                                                              |
 | `Dockerfile`               | [Container image build recipe](https://docs.docker.com/engine/reference/builder/)                                                                                                                        |
