@@ -19,8 +19,8 @@ def register_images_rigid(fixed_image_path, moving_image_path, registered_moving
         '-in', moving_image_path,
         '-out', registered_moving_image_path,
         '-omat', transform_matrix_path,
-        '-dof', '6',  # Degrees of freedom should be '6' for rigid body transformation
-        '-cost', 'mutualinfo'  # multual information or normalized mutual information are best options
+        '-dof', dof,  # Degrees of freedom should be '6' for rigid body transformation
+        '-cost', cost  # multual information or normalized mutual information are best options
     ]
     subprocess.run(flirt_command, check=True)
     print(f"Registered image saved to {registered_moving_image_path}")
