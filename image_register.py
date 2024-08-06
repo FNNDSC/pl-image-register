@@ -63,7 +63,5 @@ def main(options: Namespace, inputdir: Path, outputdir: Path):
 
 
 
-
-
 if __name__ == '__main__':
     main()
