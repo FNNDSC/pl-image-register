@@ -23,8 +23,8 @@ def convert_dicom_to_nifti(dicom_folder, output_folder):
 
 if __name__ == '__main__':
     # Define paths
-    dicom_folder = '/Users/arman/projects/image-reslice/data/ALD_dicom'  # Path to the folder containing DICOM files
-    output_folder = '/Users/arman/projects/image-reslice/data/nifti'  # Path to the folder to save NIfTI files
+    dicom_folder = '/Users/arman/projects/pl-image-register/data/ALD_dicom'  # Path to folder containing DICOMs
+    output_folder = '/Users/arman/projects/pl-image-register/data/nifti'  # Path to folder to save NIfTI file
 
     # Convert DICOM to NIfTI
     convert_dicom_to_nifti(dicom_folder, output_folder)

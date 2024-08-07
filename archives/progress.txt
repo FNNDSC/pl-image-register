@@ -1,0 +1,11 @@
+
+1. I replaced FSL's FLIRT registration with SimpleITK-based multi-resolution rigid registration. As a result, we don't
+need to deal with installing FSL on our container. Also it's much faster than FSL's FLIRT (10-15 s vs 2-3 mins).
+
+2. I updated the resampling strategy to use B-splines instead of tri-linear interpolation --> the resultant registered
+images now how a high quality (it wasn't the case with FLIRT registration).
+
+3. I didn't use any unsupported required packages, so that the plugin can be built.
+While I temporarily dodged the bullet by avoiding these "unsupported" packages, I'm sure this issue will come up,
+especially given that my tests show that even widely-used and necessary packages such as torch and monai lead to
+errors in building the plugin.

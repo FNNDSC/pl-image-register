@@ -1,95 +1,98 @@
+"""
+ChRIS Project
+Developed by Arman Avesta, MD, PhD
+FNNDSC | Boston Children's Hospital | Harvard Medical School
 
-import subprocess
-from datetime import datetime
-import SimpleITK as sitk
-import numpy as np
-import nibabel as nib
+This module contains image registration functions.
+"""
 
+# ----------------------------------------------- ENVIRONMENT SETUP ---------------------------------------------------
+# Project imports:
 from visualization_tools import imgshow
 
+# System imports:
+import SimpleITK as sitk
+import os
+from datetime import datetime
+import nibabel as nib
 
-def register_images_rigid(fixed_image_path, moving_image_path, registered_moving_image_path, transform_matrix_path,
-                          dof='6', cost='mutualinfo'):
-    """
-    This function needs FSL's FLIRT to be able to run: https://fsl.fmrib.ox.ac.uk/fsl/docs/#/registration/flirt/index
-    """
-    flirt_command = [
-        'flirt',
-        '-ref', fixed_image_path,
-        '-in', moving_image_path,
-        '-out', registered_moving_image_path,
-        '-omat', transform_matrix_path,
-        '-dof', dof,  # Degrees of freedom should be '6' for rigid body transformation
-        '-cost', cost  # multual information or normalized mutual information are best options
-    ]
-    subprocess.run(flirt_command, check=True)
-    print(f"Registered image saved to {registered_moving_image_path}")
-    print(f"Transform matrix saved to {transform_matrix_path}")
+# ---------------------------------------------- HELPER FUNCTIONS -----------------------------------------------------
 
 
-def resample_image(fixed_image_path, moving_image_path, registered_moving_image_path, transform_matrix_path):
-    """
-    Resample a moving 3D image using a transform matrix to match the space of a fixed 3D image.
+# ----------------------------------------------- MAIN FUNCTIONS ------------------------------------------------------
 
-    Parameters:
-    moving_image_path (str): Path to the moving image file (e.g., 'moving.nii.gz').
-    fixed_image_path (str): Path to the fixed image file (e.g., 'fixed.nii.gz').
-    transform_matrix_path (str): Path to the transform matrix file (e.g., 'transform.mat').
-    output_image_path (str): Path to save the resampled moving image (e.g., 'moving_registered.nii.gz').
-
-    Returns:
-    None
-    """
-    # Read the transform matrix from the file
-    transform_matrix = np.loadtxt(transform_matrix_path)
-    # print(f'transform_matrix: {transform_matrix}')
-
-    # Create an affine transform
-    transform = sitk.AffineTransform(3)
-    transform.SetMatrix(transform_matrix[:3, :3].flatten())
-    transform.SetTranslation(transform_matrix[:3, 3])
-
-    # Load the moving and fixed images
+def rigid_registration(fixed_image_path, moving_image_path, registered_image_path, transform_matrix_path):
+    # Read the images
     fixed_image = sitk.ReadImage(fixed_image_path, sitk.sitkFloat32)
     moving_image = sitk.ReadImage(moving_image_path, sitk.sitkFloat32)
 
-    # Resample the moving image
-    resampler = sitk.ResampleImageFilter()
-    resampler.SetReferenceImage(fixed_image)
-    resampler.SetTransform(transform)
-    resampler.SetInterpolator(sitk.sitkLinear)
+    # Initialize the transform
+    initial_transform = sitk.CenteredTransformInitializer(fixed_image,
+                                                          moving_image,
+                                                          sitk.Euler3DTransform(),
+                                                          sitk.CenteredTransformInitializerFilter.GEOMETRY)
 
-    # Apply the transformation
-    moving_resampled = resampler.Execute(moving_image)
+    # Set up the multi-resolution framework
+    registration_method = sitk.ImageRegistrationMethod()
+    registration_method.SetShrinkFactorsPerLevel(shrinkFactors=[4, 2, 1])
+    registration_method.SetSmoothingSigmasPerLevel(smoothingSigmas=[2, 1, 0])
+    registration_method.SmoothingSigmasAreSpecifiedInPhysicalUnitsOn()
 
-    # Save the resampled moving image
-    sitk.WriteImage(moving_resampled, registered_moving_image_path)
+    # Set up the registration components
+    registration_method.SetMetricAsMattesMutualInformation(numberOfHistogramBins=50)
+    registration_method.SetMetricSamplingStrategy(registration_method.RANDOM)
+    registration_method.SetMetricSamplingPercentage(0.01)
+    registration_method.SetInterpolator(sitk.sitkLinear)
 
-    print(f"Resampling completed and saved as '{registered_moving_image_path}'")
+    registration_method.SetOptimizerAsGradientDescent(learningRate=1.0, numberOfIterations=100,
+                                                      convergenceMinimumValue=1e-6, convergenceWindowSize=10)
+    registration_method.SetOptimizerScalesFromPhysicalShift()
 
-# Example usage:
-# resample_image('moving.nii.gz', 'fixed.nii.gz', 'transform.mat', 'moving_registered.nii.gz')
+    registration_method.SetInitialTransform(initial_transform, inPlace=False)
+    registration_method.SetOptimizerScalesFromJacobian()
+
+    # Execute the registration
+    final_transform = registration_method.Execute(fixed_image, moving_image)
+
+    # print(f"Final metric value: {registration_method.GetMetricValue()}")
+    # print(f"Optimizer's stopping condition: {registration_method.GetOptimizerStopConditionDescription()}")
+
+    # Apply the transform to the moving image
+    resampled_moving_image = sitk.Resample(moving_image, fixed_image, final_transform, sitk.sitkBSpline, 0.0,
+                                           moving_image.GetPixelID())
+
+    # Save the registered image
+    if os.path.exists(registered_image_path):
+        os.remove(registered_image_path)
+    sitk.WriteImage(resampled_moving_image, registered_image_path)
+
+    # Save the transform matrix
+    if os.path.exists(transform_matrix_path):
+        os.remove(transform_matrix_path)
+    sitk.WriteTransform(final_transform, transform_matrix_path)
+
+    print(f"final transform: {final_transform}")
+
+    return final_transform
 
 
-
-
-# CODE TESTING:
+# -------------------------------------------------- CODE TESTING -----------------------------------------------------
 
 if __name__ == '__main__':
-    fixed_image_path = '/Users/arman/projects/register_image/data/nifti/fixed.nii.gz'
-    moving_image_path = '/Users/arman/projects/register_image/data/nifti/moving.nii.gz'
-    registered_moving_image_path = '/Users/arman/projects/register_image/data/nifti/moving_registered.nii.gz'
-    transform_matrix_path = '/Users/arman/projects/register_image/data/nifti/transform.mat'
+    fixed_image_path = '/Users/arman/projects/pl-image-register/data/nifti/fixed.nii.gz'
+    moving_image_path = '/Users/arman/projects/pl-image-register/data/nifti/moving.nii.gz'
+    registered_image_path = '/Users/arman/projects/pl-image-register/data/nifti/moving_registered.nii.gz'
+    transform_matrix_path = '/Users/arman/projects/pl-image-register/data/nifti/transform.mat'
 
     t1 = datetime.now()
-    register_images_rigid(fixed_image_path, moving_image_path, registered_moving_image_path, transform_matrix_path)
+    rigid_registration(fixed_image_path, moving_image_path, registered_image_path, transform_matrix_path)
     print(f'Registration computation time: {datetime.now() - t1}')
 
-    nifti = nib.load(registered_moving_image_path)
-    imgshow(nifti)
+    fixed_image = nib.load(fixed_image_path)
+    moving_image = nib.load(moving_image_path)
+    registered_image = nib.load(registered_image_path)
+    imgshow(fixed_image)
+    imgshow(moving_image)
+    imgshow(registered_image)
 
-    # ToDo: test results show that:
-    #  1. FLIRT takes ~2 minutes to complete. Will explore faster rigid registration strategies. It would be
-    #  great if we can figure out what registration strategy Visage uses, because that takes ~10 seconds.
-    #  2. the registered image is a bit blurrier than the original image. Will explore better resampling strategies
-    #  such as B-spline interpolation.
+

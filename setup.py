@@ -1,6 +1,19 @@
+"""
+ChRIS Project
+Developed by Arman Avesta, MD, PhD
+FNNDSC | Boston Children's Hospital | Harvard Medical School
 
+This module sets up the image registration plugin.
+"""
+
+# ----------------------------------------------- ENVIRONMENT SETUP ---------------------------------------------------
+# Project imports:
+
+
+# System imports:
 from setuptools import setup
 
+# ------------------------------------------------ HELPER FUNCTIONS ---------------------------------------------------
 
 def parse_requirements(file_path):
     """
@@ -26,7 +39,7 @@ def parse_requirements(file_path):
 
     return requirements
 
-
+# ------------------------------------------------- MAIN FUNCTIONS ----------------------------------------------------
 
 setup(name='register_image',
     version='1.0.0',

@@ -1,10 +1,23 @@
+"""
+ChRIS Project
+Developed by Arman Avesta, MD, PhD
+FNNDSC | Boston Children's Hospital | Harvard Medical School
+
+This module contains image re-orientation and visualization functions.
+"""
+
+# ----------------------------------------------- ENVIRONMENT SETUP ---------------------------------------------------
+# Project imports:
+
 
 # System imports:
-import torch
 import nibabel as nib
 import matplotlib.pyplot as plt
 
+# # Print configs:
+# np.set_printoptions(precision=1, suppress=True)
 
+# ---------------------------------------------- HELPER FUNCTIONS -----------------------------------------------------
 
 def reorient_nifti(nifti):
     """
@@ -98,9 +111,7 @@ def imgshow(nifti):
 
 
 
-
-
-# CODE TESTING:
+# -------------------------------------------------- CODE TESTING -----------------------------------------------------
 
 if __name__ == '__main__':
     nifti = nib.load('/Users/arman/projects/pl-image-register/data/nifti/fixed.nii.gz')
