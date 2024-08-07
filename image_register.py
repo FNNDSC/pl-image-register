@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 """
-ChRIS Project
 Developed by Arman Avesta, MD, PhD
 FNNDSC | Boston Children's Hospital | Harvard Medical School
 
