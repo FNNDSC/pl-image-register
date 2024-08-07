@@ -71,10 +71,6 @@ def rigid_registration(fixed_image_path, moving_image_path, registered_image_pat
         os.remove(transform_matrix_path)
     sitk.WriteTransform(final_transform, transform_matrix_path)
 
-    print(f"final transform: {final_transform}")
-
-    return final_transform
-
 
 # -------------------------------------------------- CODE TESTING -----------------------------------------------------
 
