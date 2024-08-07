@@ -1,18 +1,28 @@
 #!/usr/bin/env python
 
+"""
+ChRIS Project
+Developed by Arman Avesta, MD, PhD
+FNNDSC | Boston Children's Hospital | Harvard Medical School
+
+This module contains argument parsing and main function for the image_register plugin.
+"""
+# --------------------------------------------- ENVIRONMENT SETUP -----------------------------------------------------
+# Project imports:
+from registration_tools import rigid_registration
+
+# System imports:
 from os.path import join
 from pathlib import Path
 from argparse import ArgumentParser, Namespace, ArgumentDefaultsHelpFormatter
 from chris_plugin import chris_plugin
 
-from registration_tools import register_images_rigid
-
-
+# ---------------------------------------------- ARGUMENT PARSING -----------------------------------------------------
 
 title = r"""
 
                         ###########################
-                        ChRIS Register Image Plugin
+                        ChRIS Image Register Plugin
                         ###########################
 
 """
@@ -30,14 +40,9 @@ parser.add_argument('--registered_moving_image', type=str, default='registered_m
                     help='relative path to the registered image in relation to output folder')
 parser.add_argument('--transform_matrix', type=str, default='transform.mat',
                     help='relative path to the transformation matrix in relation to output folder')
-parser.add_argument('--dof', type=str, default='6',
-                    help='degrees of freedom to use in registration. Default = 6 (i.e. rigid registration).')
-parser.add_argument('--cost', type=str, default='mutualinfo',
-                    help='cost function used in registration. Default = mutualinfo (mutual information).')
 
+# ------------------------------------------- ChRIS PLUGIN WRAPPER ----------------------------------------------------
 
-# ToDo: how can I determine the minimum memory and CPU required for this plugin? I roughly estimated the required
-#  memory by looking up how much memory the registration process needed on the Activity Monitor app on my Mac :D
 @chris_plugin(
     parser=parser,
     title='register_image',
@@ -46,6 +51,7 @@ parser.add_argument('--cost', type=str, default='mutualinfo',
     min_cpu_limit='1000m',          # millicores, e.g. "1000m" = 1 CPU core
     min_gpu_limit=0)                # set min_gpu_limit=1 to enable GPU
 
+# ----------------------------------------------- MAIN FUNCTION -------------------------------------------------------
 
 def main(options: Namespace, inputdir: Path, outputdir: Path):
 
@@ -55,13 +61,10 @@ def main(options: Namespace, inputdir: Path, outputdir: Path):
     moving_image_path = join(inputdir, options.moving_image)
     registered_moving_image_path = join(outputdir, options.registered_moving_image)
     transform_matrix_path = join(outputdir, options.transform_matrix)
-    dof = options.dof
-    cost = options.cost
 
-    register_images_rigid(fixed_image_path, moving_image_path, registered_moving_image_path, transform_matrix_path,
-                          dof, cost)
+    rigid_registration(fixed_image_path, moving_image_path, registered_moving_image_path, transform_matrix_path)
 
-
+# ------------------------------------------------ EXECUTE MAIN -------------------------------------------------------
 
 if __name__ == '__main__':
     main()
