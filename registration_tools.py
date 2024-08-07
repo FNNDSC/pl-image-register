@@ -12,9 +12,9 @@ from visualization_tools import imgshow
 
 # System imports:
 import SimpleITK as sitk
+import nibabel as nib
 import os
 from datetime import datetime
-import nibabel as nib
 
 # ---------------------------------------------- HELPER FUNCTIONS -----------------------------------------------------
 
