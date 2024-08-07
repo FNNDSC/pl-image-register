@@ -41,7 +41,7 @@ def parse_requirements(file_path):
 
 # ------------------------------------------------- MAIN FUNCTIONS ----------------------------------------------------
 
-setup(name='register_image',
+setup(name='image_register',
     version='1.0.0',
     description='A ChRIS plugin for image registration and re-slicing.',
     author='FNNDSC / Arman Avesta, MD, PhD',

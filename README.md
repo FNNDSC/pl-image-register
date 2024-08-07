@@ -25,7 +25,15 @@ For more information, visit our website https://chrisproject.org
 
 ## Usage Instructions
 
-ToDo.
+`pl-image-register` is a ChRIS plugin to register a moving image onto a fixed image using rigid registration, then 
+saving the registered image and the transform matrix. 
+
+### Example usage:
+
+`image_register --fixed_image standardized_images/standardized_t1_mri.nii.gz 
+--moving_image john_doe/MRI_3.20.24/T1.nii.gz 
+--registered_image john_doe/MRI_3.20.24/T1_reoriented.nii.gz
+--transform_matrix john_doe/MRI_3.20.24/T1_transform_matrix.mat`
 
 ## Examples of other ChRIS Plugins
 
