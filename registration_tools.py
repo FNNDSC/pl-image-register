@@ -90,4 +90,3 @@ if __name__ == '__main__':
     imgshow(moving_image)
     imgshow(registered_image)
 
-

@@ -21,8 +21,9 @@ I strongly recommend building (and testing) locally before you push to GitHub. T
 
 To build locally, run
 
-1
+
 docker build -t localhost/fnndsc/pl-image-register:latest .
+
 Jennings Zhang
 In your GitHub build logs, I see the error message is gcc: command not found. This error message has to do with how Python's ecosystem of community libraries, including monai, torch, and nipype, is somewhat messy and fragmented. But fear not, you can definitely use these libraries.
 
